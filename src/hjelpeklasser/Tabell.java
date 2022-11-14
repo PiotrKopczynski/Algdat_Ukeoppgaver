@@ -212,6 +212,35 @@ public class Tabell {
         return new int[] {m,nm};
     }
 
+    public static int[] nestMaks4(int[] a) {
+        int n = a.length;
+
+        if (n<2) {
+            throw new IllegalArgumentException("a.length(" + n + ") < 2!");
+        }
+
+        int[] b = new int[2*n];
+        System.arraycopy(a,0,b,n,n);
+
+        for (int k = 2*n-2;k>1;k-=2) { //Lager turneringstre
+            b[k/2] = Math.max(b[k],b[k+1]);
+        }
+
+        int maksverdi = b[1], nestmaksverdi = Integer.MIN_VALUE;
+        for (int k = 2;k<2*n-1;k*=2) {
+            int temp = b[k+1];
+            if(maksverdi != b[k]) {
+                temp = b[k];
+                k++;
+            }
+            if (temp > nestmaksverdi) {
+                nestmaksverdi = temp;
+            }
+        }
+
+        return new int[] {maksverdi,nestmaksverdi};
+    }
+
     public static void sortering(int[] a) {
         for (int i = a.length;i>1;i--) {
             int m = maks(a,0,i);
