@@ -248,4 +248,97 @@ public class Tabell {
         }
     }
 
+    public static void snu(int[] a, int v, int h) { //snur intervallet a[v:h]
+        while (v<h) bytt(a, v++, h--);
+    }
+
+    public static void snu(int[] a, int v) { // snur fra og med v og ut tabellen
+        snu(a,v,a.length-1);
+    }
+
+    public static void snu(int[] a) {
+        snu(a,0,a.length-1);
+    }
+
+    public static boolean nestePermutasjon(int[] a) {
+        int i = a.length-2; // i starter nest bakerst
+        while (i>=0 && a[i]>a[i+1]) i--; // går mot venstre
+        if (i<0) return false;  // a = {n, n-1, . . . , 2, 1}
+
+        int j = a.length - 1; // j starter bakerst
+        while (a[j] < a[i]) j--; // stopper nåt a[j] > a[i]
+        bytt(a,i,j); // bytter og snur
+        snu(a,i+1);
+
+        return true;
+    }
+
+    public static void utvalgssortering(int[] a) {
+        for (int i = 0; i<a.length-1; i++) {
+            bytt(a,i, min(a, i, a.length));
+        }
+    }
+
+    public static void utvalgssortering(int[] a, int fra, int til) {
+        fratilKontroll(a.length,fra,til);
+        for (int i = fra; i< til-1; i++) {
+            bytt(a,i,min(a,i,til));
+        }
+    }
+
+    public static int lineærsøk(int[] a, int verdi) {
+        if (a.length == 0 || verdi > a[a.length-1]) {
+            return -(a.length+1); // verdi er større enn den største
+        }
+        int i = 0;
+        for( ; a[i]<verdi; i++); // siste verdi er vaktpost
+        return verdi == a[i] ? i : -(i+1); //sjekker innholdet i a[i]
+    }
+
+    public static int lineærsøk(int[] a, int k, int verdi) {
+        if (k<1) {
+            throw new IllegalArgumentException("Må ha k > 0!");
+        }
+        int j = k - 1;
+        for(; j < a.length && verdi > a[j]; j += k);
+
+        int i = j -k +1; //søker i a[j-k+1:j]
+        for ( ; i < a.length && a[i]<verdi; i++);
+        if (i < a.length && a[i] == verdi) return i;
+        else return -(i + 1);
+    }
+
+    // 3. versjon av binærsøk - returverdier som for Programkode 1.3.6 a)
+    public static int binærsøk(int[] a, int fra, int til, int verdi)
+    {
+        Tabell.fratilKontroll(a.length,fra,til);  // se Programkode 1.2.3 a)
+        int v = fra, h = til - 1;  // v og h er intervallets endepunkter
+
+        while (v < h)  // obs. må ha v < h her og ikke v <= h
+        {
+            int m = (v + h)/2;  // heltallsdivisjon - finner midten
+
+            if (verdi > a[m]) v = m + 1;   // verdi må ligge i a[m+1:h]
+            else  h = m;                   // verdi må ligge i a[v:m]
+        }
+        if (h < v || verdi < a[v]) return -(v + 1);  // ikke funnet
+        else if (verdi == a[v]) return v;            // funnet
+        else  return -(v + 2);                       // ikke funnet
+    }
+
+    public static void innsettingssortering(int[] a, int fra, int til)
+    {
+        fratilKontroll(a.length,fra,til);  // se Programkode 1.2.3 a)
+
+        for (int i = fra + 1; i < til; i++)  // a[fra] er første verdi
+        {
+            int temp = a[i];  // flytter a[i] til en hjelpevariabel
+
+            // verdier flyttes inntil rett sortert plass i a[fra:i> er funnet
+            int j = i-1; for (; j >= fra && temp < a[j]; j--) a[j+1] = a[j];
+
+            a[j+1] = temp;  // verdien settes inn på rett sortert plass
+        }
+    }
+
 }
